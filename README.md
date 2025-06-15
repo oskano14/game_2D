@@ -107,4 +107,4 @@ Projet personnel pour promouvoir un univers original ( fantasy)
 
 ## 📄 Licence
 
-Ce projet est open-source sous licence MIT.  
+Ce projet est sous licence MIT.  
