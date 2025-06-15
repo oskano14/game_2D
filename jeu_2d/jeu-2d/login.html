@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion au jeu</title>
+    <style>
+      body {
+        background-color: #0d0d0d;
+        color: #f0f0f0;
+        font-family: "Press Start 2P", monospace;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background: rgba(20, 20, 20, 0.85);
+        padding: 2rem;
+        border: 2px solid #444;
+        border-radius: 8px;
+        width: 300px;
+        text-align: center;
+      }
+      input {
+        width: 90%;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        border: none;
+        border-radius: 4px;
+        background: #222;
+        color: white;
+      }
+      button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        background-color: crimson;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: darkred;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Connexion</h2>
+      <input type="email" id="login-email" placeholder="Email" />
+      <input type="password" id="login-password" placeholder="Mot de passe" />
+      <button onclick="login()">Connexion</button>
+
+      <h3 style="margin-top: 2rem">Inscription</h3>
+      <input type="email" id="register-email" placeholder="Email" />
+      <input
+        type="password"
+        id="register-password"
+        placeholder="Mot de passe"
+      />
+      <button onclick="register()">Créer un compte</button>
+
+      <p id="status" style="margin-top: 1rem; color: lime"></p>
+    </div>
+
+    <script>
+      async function login() {
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        const res = await fetch("http://localhost:8000/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (data.user_id) {
+          localStorage.setItem("user_id", data.user_id);
+          document.getElementById(
+            "status"
+          ).textContent = `Bienvenue joueur #${data.user_id}`;
+          setTimeout(() => (window.location.href = "index.html"), 1000);
+        } else {
+          document.getElementById("status").textContent = data.error;
+        }
+      }
+
+      async function register() {
+        const email = document.getElementById("register-email").value;
+        const password = document.getElementById("register-password").value;
+        const res = await fetch("http://localhost:8000/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        document.getElementById("status").textContent = data.user_id
+          ? `Compte créé avec l'ID ${data.user_id}`
+          : data.error;
+      }
+    </script>
+  </body>
+</html>
